@@ -18,7 +18,7 @@ def load(model_id="runwayml/stable-diffusion-v1-5"):
 def gen(pipe, prompt, negative_prompt, num_inference_steps=50):
     def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
         approximateDecoder = ApproximateDecoder.for_pipeline(pipe)
-        latents_image = approximateDecoder(latents)
+        latents_image = approximateDecoder(latents.squeeze(0))
 
         # แสดงรูปภาพพร้อม title เป็น step
         plt.figure(figsize=(6, 6))
