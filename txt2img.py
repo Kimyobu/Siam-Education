@@ -5,7 +5,7 @@ from IPython.display import display
 from utils import save_img
 
 parser = argparse.ArgumentParser(description="")
-parser.add_argument("prompt", type=str)
+parser.add_argument("--prompt", type=str)
 
 args = parser.parse_args()
 
