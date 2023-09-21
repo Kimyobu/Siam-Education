@@ -29,6 +29,7 @@ def gen(pipe, prompt, negative_prompt, num_inference_steps=50):
         plt.show()
     p = pipe(prompt=prompt, negative_prompt=negative_prompt ,num_inference_steps=num_inference_steps, callback=display_latents_callback)
     images = p.images
-    save = save_img(image, "outputs/txt2img")
+    for image in images:
+        save = save_img(image, "outputs/txt2img")
     # display_images_sorted(os.path.dirname(save), num_cols=5, image_width=4)
     display_images_in_grid(images)
