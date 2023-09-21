@@ -1,8 +1,8 @@
 import os
 import torch
 import torchvision.transforms as T
-import matplotlib.pyplot as plt
 from PIL import Image
+import matplotlib.pyplot as plt
 from datetime import datetime
 
 def display_images_sorted(folder_path, num_cols=4, image_width=4):
@@ -49,8 +49,15 @@ def display_images_in_grid(image_list, num_cols=4, image_width=4):
     plt.tight_layout()
     plt.show()
 
-def torch_to_image(latents: torch.FloatTensor):
+def tensor_to_image(tensor):
+    # ใช้ transform ใน torchvision เพื่อแปลง tensor เป็นรูปภาพ
     transform = T.ToPILImage()
-    # convert the tensor to PIL image using above transform
-    img = transform(latents)
-    return img
+
+    # ถ้า tensor มี batch dimension (batch_size > 1) ให้ใช้ลูปเพื่อแปลงและแสดงรูปภาพแต่ละรายการใน batch
+    if len(tensor.shape) == 4:
+        images = [transform(t) for t in tensor]
+    # ถ้า tensor ไม่มี batch dimension (batch_size=1) ให้แปลงและคืนเป็นรูปภาพเดียวในรูปแบบของ list ที่มีรายการเดียว
+    else:
+        images = [transform(tensor.squeeze(0))]
+    
+    return images

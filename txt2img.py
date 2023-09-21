@@ -2,13 +2,14 @@ import torch
 import os
 from diffusers import StableDiffusionPipeline
 import argparse
+import matplotlib.pyplot as plt
 from IPython.display import Image
 from utils import save_img
 from image import display_images_sorted, display_images_in_grid, torch_to_image
 
 def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
     # แปลง latents เป็นรูปภาพ
-    latents_image = torch_to_image(latents)
+    latents_image = tensor_to_image(latents)
 
     # แสดงรูปภาพพร้อม title เป็น step
     plt.figure(figsize=(6, 6))
