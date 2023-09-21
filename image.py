@@ -1,4 +1,5 @@
 import os
+import torch
 import matplotlib.pyplot as plt
 from PIL import Image
 from datetime import datetime
