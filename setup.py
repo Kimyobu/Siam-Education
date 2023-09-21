@@ -58,5 +58,6 @@ def install_req(file):
     for x in r.split('\n'):
         run_pip(x)
 
-run("pip install --no-cache-dir --upgrade -q pip")
-install_req("requirements.txt")
+def setup():
+    run("pip install --no-cache-dir --upgrade -q pip")
+    install_req("requirements.txt")
