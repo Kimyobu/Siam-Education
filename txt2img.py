@@ -1,7 +1,7 @@
 import torch
 from diffusers import StableDiffusionPipeline
 import argparse
-from IPython.display import display
+from IPython.display import Image
 from utils import save_img
 
 parser = argparse.ArgumentParser(description="")
@@ -16,8 +16,7 @@ pipe.enable_xformers_memory_efficient_attention()
 prompt = args.prompt
 image = pipe(prompt).images[0]
 save_img(image, "outputs/txt2img")
-display(image)
+Image(image)
 
 del pipe
-torch.cpu.empty_cache()
 torch.cuda.empty_cache()
