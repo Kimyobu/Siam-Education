@@ -1,6 +1,7 @@
 import argparse
 import subprocess
 import importlib.util
+from importlib.metadata import version
 
 def run(cmd: str):
     return subprocess.run(f"{cmd}", shell=True)
