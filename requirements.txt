@@ -7,3 +7,4 @@ xformers
 IPython==8.14.0
 Pillow==9.5.0
 matplotlib
+ipykernel
