@@ -7,6 +7,8 @@ from IPython.display import Image
 from utils import save_img
 from image import display_images_sorted, display_images_in_grid
 
+VEA = VQModel()
+
 def tensor_to_image(tensor):
     # ใช้ transform ใน torchvision เพื่อแปลง tensor เป็นรูปภาพ
     transform = T.ToPILImage()
@@ -22,7 +24,7 @@ def tensor_to_image(tensor):
 
 def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
     # แปลง latents เป็นรูปภาพ
-    tensor = VQModel.forward(sample=latents).latents
+    tensor = VEA.forward(sample=latents).latents
     latents_image = tensor_to_image(tensor)
 
     # แสดงรูปภาพพร้อม title เป็น step
