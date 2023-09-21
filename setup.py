@@ -10,7 +10,7 @@ args = parser.parse_args()
 venv = args.venv
 
 def run(cmd: str):
-    return subprocess.run(f"source {venv}; {cmd}", shell=True)
+    return subprocess.run(f". {venv}; {cmd}", shell=True)
 
 def is_installed(name: str, pkg_version: str or None = None, operator: str = '=='):
     out = False
