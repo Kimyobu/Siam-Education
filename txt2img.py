@@ -6,7 +6,7 @@ from IPython.display import Image
 from utils import save_img
 from image import display_images_sorted, display_images_in_grid
 
-def from_pretrained(model_id="runwayml/stable-diffusion-v1-5"):
+def load(model_id="runwayml/stable-diffusion-v1-5"):
     pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, safety_check=None)
     pipe = pipe.to("cuda")
     pipe.enable_xformers_memory_efficient_attention()
