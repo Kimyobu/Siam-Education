@@ -13,7 +13,7 @@ from image import display_images_sorted, display_images_in_grid
 def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
     # แปลง latents เป็นรูปภาพ
     tranform = T.ToPILImage(mode="RGBA")
-    latents_image = tranform(latents)
+    latents_image = tranform(latents.squeeze(0))
 
     # แสดงรูปภาพพร้อม title เป็น step
     plt.figure(figsize=(6, 6))
