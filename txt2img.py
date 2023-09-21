@@ -25,7 +25,7 @@ def load(model_id="runwayml/stable-diffusion-v1-5"):
     return pipe
 
 def gen(pipe, prompt, negative_prompt, num_inference_steps=50):
-    images = pipe(prompt=promptne, gative_prompt=negative_prompt ,num_inference_steps=num_inference_steps, callback=display_latents_callback)
+    images = pipe(prompt=prompt, negative_prompt=negative_prompt ,num_inference_steps=num_inference_steps, callback=display_latents_callback)
     save = save_img(image, "outputs/txt2img")
     # display_images_sorted(os.path.dirname(save), num_cols=5, image_width=4)
     display_images_in_grid(images)
