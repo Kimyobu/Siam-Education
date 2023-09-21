@@ -1,5 +1,6 @@
 import os
 import torch
+import torchvision.transforms as T
 import matplotlib.pyplot as plt
 from PIL import Image
 from datetime import datetime

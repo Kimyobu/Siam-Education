@@ -1,5 +1,4 @@
 import torch
-import torchvision.transforms as T
 import os
 from diffusers import StableDiffusionPipeline
 import argparse
