@@ -22,7 +22,8 @@ def tensor_to_image(tensor):
 
 def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
     # แปลง latents เป็นรูปภาพ
-    latents_image = tensor_to_image(VQModel.forward(latents))
+    tensor = VQModel.forward(sample=latents).latents
+    latents_image = tensor_to_image(tensor)
 
     # แสดงรูปภาพพร้อม title เป็น step
     plt.figure(figsize=(6, 6))
