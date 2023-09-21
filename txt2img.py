@@ -18,7 +18,7 @@ def gen(pipe, prompt, negative_prompt, num_inference_steps=50):
     def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
         # แปลง latents เป็นรูปภาพ
         tranform = T.ToPILImage(mode="RGBA")
-        tensor = pipe.vae.forward(latents)
+        tensor = pipe.vae.forward(latents.squeeze(0))
         latents_image = tranform(tensor.squeeze(0))
 
         # แสดงรูปภาพพร้อม title เป็น step
