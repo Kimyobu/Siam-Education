@@ -8,20 +8,6 @@ from IPython.display import Image
 from utils import save_img
 from image import display_images_sorted, display_images_in_grid
 
-
-
-def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
-    # แปลง latents เป็นรูปภาพ
-    tranform = T.ToPILImage(mode="RGBA")
-    latents_image = tranform(latents.squeeze(0))
-
-    # แสดงรูปภาพพร้อม title เป็น step
-    plt.figure(figsize=(6, 6))
-    plt.imshow(latents_image)
-    plt.title(f"Step {step}")
-    plt.axis('off')
-    plt.show()
-
 def load(model_id="runwayml/stable-diffusion-v1-5"):
     pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, safety_check=None)
     pipe = pipe.to("cuda")
@@ -29,7 +15,20 @@ def load(model_id="runwayml/stable-diffusion-v1-5"):
     return pipe
 
 def gen(pipe, prompt, negative_prompt, num_inference_steps=50):
-    images = pipe(prompt=prompt, negative_prompt=negative_prompt ,num_inference_steps=num_inference_steps, callback=display_latents_callback)
+    def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
+        # แปลง latents เป็นรูปภาพ
+        tranform = T.ToPILImage(mode="RGBA")
+        tensor = pipe.vae.forward(latents)
+        latents_image = tranform(tensor.squeeze(0))
+
+        # แสดงรูปภาพพร้อม title เป็น step
+        plt.figure(figsize=(6, 6))
+        plt.imshow(latents_image)
+        plt.title(f"Step {step}")
+        plt.axis('off')
+        plt.show()
+    p = pipe(prompt=prompt, negative_prompt=negative_prompt ,num_inference_steps=num_inference_steps, callback=display_latents_callback)
+    images = p.images
     save = save_img(image, "outputs/txt2img")
     # display_images_sorted(os.path.dirname(save), num_cols=5, image_width=4)
     display_images_in_grid(images)
