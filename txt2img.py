@@ -2,7 +2,7 @@ import torch
 from diffusers import StableDiffusionPipeline
 import argparse
 from IPython.display import display
-from .utils import save_img
+from utils import save_img
 
 parser = argparse.ArgumentParser(description="")
 parser.add_argument("prompt", type=str)
