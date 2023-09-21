@@ -3,7 +3,7 @@ import subprocess
 import importlib.util
 
 parser = argparse.ArgumentParser(description="")
-parser.add_argument("venv", type=str)
+parser.add_argument("--venv", type=str)
 
 args = parser.parse_args()
 
