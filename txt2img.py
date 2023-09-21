@@ -17,3 +17,7 @@ prompt = args.prompt
 image = pipe(prompt).images[0]
 save_img(image, "outputs/txt2img")
 display(image)
+
+del pipe
+torch.cpu.empty_cache()
+torch.cuda.empty_cache()
