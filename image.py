@@ -31,7 +31,7 @@ def display_images_sorted(folder_path, num_cols=4, image_width=4):
     plt.tight_layout()
     plt.show()
 
-def display_images_in_grid(image_list, num_cols=4, image_width=4):
+def display_images_in_grid(image_list, num_cols=4, image_width=6):
     num_images = len(image_list)
     num_rows = (num_images + num_cols - 1) // num_cols
 

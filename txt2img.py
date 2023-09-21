@@ -9,8 +9,12 @@ from utils import save_img
 from image import display_images_sorted, display_images_in_grid
 from preview_decoder import ApproximateDecoder
 
-def load(model_id="runwayml/stable-diffusion-v1-5"):
-    pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, safety_check=None)
+def load(model_id="runwayml/stable-diffusion-v1-5", from_single_file=False):
+    pipe = None
+    if from_single_file is True:
+        pipe = StableDiffusionPipeline.from_single_file(model_id, torch_dtype=torch.float16, safety_check=None, use_safetensors=True)
+    else:
+        pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, safety_check=None, use_safetensors=True)
     pipe = pipe.to("cuda")
     pipe.enable_xformers_memory_efficient_attention()
     return pipe
