@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from IPython.display import Image
 from utils import save_img
 from image import display_images_sorted, display_images_in_grid
+from preview_decoder import ApproximateDecoder
 
 def load(model_id="runwayml/stable-diffusion-v1-5"):
     pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, safety_check=None)
@@ -16,10 +17,8 @@ def load(model_id="runwayml/stable-diffusion-v1-5"):
 
 def gen(pipe, prompt, negative_prompt, num_inference_steps=50):
     def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
-        # แปลง latents เป็นรูปภาพ
-        tranform = T.ToPILImage(mode="RGBA")
-        tensor = pipe.vae.forward(latents.squeeze(0))
-        latents_image = tranform(tensor.squeeze(0))
+        approximateDecoder = ApproximateDecoder.for_pipeline(pipe)
+        latents_image = approximateDecoder(latents)
 
         # แสดงรูปภาพพร้อม title เป็น step
         plt.figure(figsize=(6, 6))
