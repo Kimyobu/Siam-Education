@@ -52,5 +52,5 @@ def display_images_in_grid(image_list, num_cols=4, image_width=4):
 def torch_to_image(latents: torch.FloatTensor):
     transform = T.ToPILImage()
     # convert the tensor to PIL image using above transform
-    img = transform(tensor)
+    img = transform(latents)
     return img
