@@ -1,6 +1,6 @@
 import argparse
 import subprocess
-import importlib
+import importlib.util
 
 parser = argparse.ArgumentParser(description="")
 parser.add_argument("venv", type=str)
