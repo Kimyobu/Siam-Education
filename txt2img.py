@@ -17,7 +17,3 @@ def gen(pipe, prompt):
     save = save_img(image, "outputs/txt2img")
     # display_images_sorted(os.path.dirname(save), num_cols=5, image_width=4)
     display_images_in_grid(images)
-
-def unload():
-    del pipe
-    torch.cuda.empty_cache()
