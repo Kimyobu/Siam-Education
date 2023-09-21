@@ -1,31 +1,19 @@
 import torch
+import torchvision.transforms as T
 import os
-from diffusers import StableDiffusionPipeline, VQModel
+from diffusers import StableDiffusionPipeline
 import argparse
 import matplotlib.pyplot as plt
 from IPython.display import Image
 from utils import save_img
 from image import display_images_sorted, display_images_in_grid
 
-VEA = VQModel()
 
-def tensor_to_image(tensor):
-    # ใช้ transform ใน torchvision เพื่อแปลง tensor เป็นรูปภาพ
-    transform = T.ToPILImage()
-
-    # ถ้า tensor มี batch dimension (batch_size > 1) ให้ใช้ลูปเพื่อแปลงและแสดงรูปภาพแต่ละรายการใน batch
-    if len(tensor.shape) == 4:
-        images = [transform(t) for t in tensor]
-    # ถ้า tensor ไม่มี batch dimension (batch_size=1) ให้แปลงและคืนเป็นรูปภาพเดียวในรูปแบบของ list ที่มีรายการเดียว
-    else:
-        images = [transform(tensor.squeeze(0))]
-    
-    return images
 
 def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
     # แปลง latents เป็นรูปภาพ
-    tensor = VEA.forward(sample=latents).latents
-    latents_image = tensor_to_image(tensor)
+    tranform = T.ToPILImage(mode="RGBA")
+    latents_image = tranform(latents)
 
     # แสดงรูปภาพพร้อม title เป็น step
     plt.figure(figsize=(6, 6))
