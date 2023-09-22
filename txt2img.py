@@ -1,8 +1,12 @@
 import torch
 import torchvision.transforms as T
 import os
-from diffusers import StableDiffusionPipeline
+
+import diffusers
+import transformers
+
 import argparse
+
 import matplotlib.pyplot as plt
 from IPython.display import Image
 from utils import save_img
@@ -12,17 +16,17 @@ from scheduler import Schedulers
 
 Scheduler = Schedulers()
 
-def load(model_id="runwayml/stable-diffusion-v1-5", from_single_file=False):
+def load(model_id="runwayml/stable-diffusion-v1-5", from_single_file=False, device="cuda"):
     pipe = None
     if from_single_file is True:
-        pipe = StableDiffusionPipeline.from_single_file(model_id, torch_dtype=torch.float16, safety_check=None, use_safetensors=True)
+        pipe = diffusers.StableDiffusionPipeline.from_single_file(model_id, torch_dtype=torch.float16, safety_checker=None, use_safetensors=True, requires_safety_checker=False)
     else:
-        pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, safety_check=None, use_safetensors=True)
-    pipe = pipe.to("cuda")
+        pipe = diffusers.StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, safety_checker=None, use_safetensors=True, requires_safety_checker=False)
+    pipe = pipe.to(device)
     pipe.enable_xformers_memory_efficient_attention()
     return pipe
 
-def gen(pipe, prompt, negative_prompt, num_inference_steps=50, scheduler_name="DPM++ 2M", use_karras_sigmas=False):
+def gen(pipe: diffusers.StableDiffusionPipeline, prompt, negative_prompt, num_inference_steps=50, scheduler_name="DPM++ 2M", use_karras_sigmas=False, clip_skip=2, size=(512,512), cfg_scale=7.5, generator=["cuda", -1]):
     def display_latents_callback(step: int, timestep: int, latents: torch.FloatTensor):
         approximateDecoder = ApproximateDecoder.for_pipeline(pipe)
         latents_image = approximateDecoder(latents.squeeze(0))
@@ -35,7 +39,20 @@ def gen(pipe, prompt, negative_prompt, num_inference_steps=50, scheduler_name="D
         plt.show()
     
     pipe.scheduler = Scheduler(scheduler_name).from_config(pipe.scheduler.config, use_karras_sigmas=use_karras_sigmas)
-    p = pipe(prompt=prompt, negative_prompt=negative_prompt ,num_inference_steps=num_inference_steps, callback=display_latents_callback)
+    pipe.text_encoder = transformers.CLIPTextModel._from_config(pipe.text_encoder.config, num_hidden_layers=12 - (clip_skip - 1), torch_dtype=pipe.device)
+    seed = generator[1]
+    seed = torch.randint(0, 244536412, (1,)).item() if seed == -1 else seed
+    generator = torch.Generator(device="cuda").manual_seed(seed)
+    p = pipe(
+        prompt=prompt,
+        negative_prompt=negative_prompt,
+        num_inference_steps=num_inference_steps, 
+        callback=display_latents_callback,
+        width=size[0],
+        height=size[1],
+        guidance_scale=cfg_scale,
+        generator=generator
+    )
     images = p.images
     for image in images:
         save = save_img(image, "outputs/txt2img")

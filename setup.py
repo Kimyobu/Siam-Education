@@ -1,7 +1,14 @@
 import argparse
 import subprocess
+import sys
+import argparse
 import importlib.util
 from importlib.metadata import version
+
+parser = argparse.ArgumentParser(description="")
+parser.add_argument("--run", action="store_true", required=False)
+
+args = parser.parse_args()
 
 def run(cmd: str):
     return subprocess.run(f"{cmd}", shell=True)
@@ -49,7 +56,7 @@ def run_pip(install_syntax: str):
 
         if is_installed(name, version, operator) is False and name != '':
             print(f'Install {install_syntax}')
-            run(f"pip install --no-cache-dir -q {install_syntax}")
+            run(f"{sys.executable} -m pip install --no-cache-dir -q {install_syntax}")
             
 def install_req(file):
     op = open(file, 'r')
@@ -59,5 +66,8 @@ def install_req(file):
         run_pip(x)
 
 def setup():
-    run("pip install --no-cache-dir --upgrade -q pip")
+    run(f"{sys.executable} -m pip install --no-cache-dir --upgrade -q pip")
     install_req("requirements.txt")
+
+if args.run is True:
+    setup()
