@@ -39,7 +39,7 @@ def gen(model_id: str, pipe: diffusers.StableDiffusionPipeline, prompt: str, neg
         plt.show()
     
     pipe.scheduler = Scheduler(scheduler_name).from_config(pipe.scheduler.config, use_karras_sigmas=use_karras_sigmas)
-    #pipe.text_encoder = transformers.CLIPTextModel.from_pretrained(model_id, num_hidden_layers=12 - (clip_skip - 1), torch_dtype=torch.float16)
+    pipe.text_encoder.config.num_hidden_layers = 12 - (clip_skip - 1)
     seed = generator[1]
     seed = torch.randint(0, 244536412, (1,)).item() if seed == -1 else seed
     generator = torch.Generator(device=generator[0]).manual_seed(seed)
