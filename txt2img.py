@@ -24,6 +24,7 @@ def load(model_id="runwayml/stable-diffusion-v1-5", from_single_file=False, devi
         pipe = diffusers.StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, safety_checker=None, use_safetensors=True, requires_safety_checker=False)
     pipe = pipe.to(device)
     pipe.enable_xformers_memory_efficient_attention()
+    pipe["model_id"] = model_id
     return pipe
 
 def gen(pipe: diffusers.StableDiffusionPipeline, prompt, negative_prompt, num_inference_steps=50, scheduler_name="DPM++ 2M", use_karras_sigmas=False, clip_skip=2, size=(512,512), cfg_scale=7.5, generator=["cuda", -1]):
@@ -39,7 +40,7 @@ def gen(pipe: diffusers.StableDiffusionPipeline, prompt, negative_prompt, num_in
         plt.show()
     
     pipe.scheduler = Scheduler(scheduler_name).from_config(pipe.scheduler.config, use_karras_sigmas=use_karras_sigmas)
-    pipe.text_encoder = transformers.CLIPTextModel._from_config(pipe.text_encoder.config, num_hidden_layers=12 - (clip_skip - 1), torch_dtype=torch.float16)
+    pipe.text_encoder = transformers.CLIPTextModel.from_pretrained(pipe["model_id"], num_hidden_layers=12 - (clip_skip - 1), torch_dtype=torch.float16)
     seed = generator[1]
     seed = torch.randint(0, 244536412, (1,)).item() if seed == -1 else seed
     generator = torch.Generator(device=generator[0]).manual_seed(seed)
